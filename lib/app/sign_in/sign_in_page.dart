@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:time_tracker/app/common_widgets/custom_elevated_button.dart';
 import 'package:time_tracker/app/sign_in/sign_in_button.dart';
+import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
 
 class SignInPage extends StatelessWidget {
   @override
@@ -31,31 +31,30 @@ class SignInPage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(
-            height: 8.0,
+            height: 48.0,
           ),
-          SignInButton(
-            text: 'Prijava putem Facebooka',
-            textColor: Colors.white,
-            backgroundColor: Colors.blue.shade700,
+          SocialSignInButton(
+            backgroundColor: Color(0xFF334D92),
+            socialImage: 'facebook',
             onPressed: () {},
+            text: 'Prijava putem Facebook-a',
+            textColor: Colors.white,
           ),
           SizedBox(
             height: 8.0,
           ),
-          CustomElevatedButton(
-            child: Text(
-              'Prijava putem Googla',
-              style: TextStyle(color: Colors.black),
-            ),
+          SocialSignInButton(
             backgroundColor: Colors.white,
+            socialImage: 'google',
             onPressed: () {},
+            text: 'Prijava putem Google-a',
+            textColor: Colors.black87,
           ),
           SizedBox(height: 8.0),
-          CustomElevatedButton(
-            child: Text(
-              'Prijava putem Emaila',
-            ),
-            backgroundColor: Colors.green,
+          SignInButton(
+            text: 'Prijava putem Emaila',
+            textColor: Colors.white,
+            backgroundColor: Colors.teal.shade700,
             onPressed: () {},
           ),
           SizedBox(height: 8.0),
@@ -64,12 +63,10 @@ class SignInPage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 8.0),
-          CustomElevatedButton(
-            child: Text(
-              'Anonimna prijava',
-              style: TextStyle(color: Colors.black),
-            ),
-            backgroundColor: Colors.orange,
+          SignInButton(
+            text: 'Anonimna prijava',
+            textColor: Colors.black87,
+            backgroundColor: Colors.lime.shade400,
             onPressed: () {},
           ),
         ],
