@@ -1,8 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:time_tracker/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
 
 class SignInPage extends StatelessWidget {
+  const SignInPage({Key key, @required this.onSignIn}) : super(key: key);
+  final void Function(User) onSignIn;
+
+  Future<void> _signInAnonimosly() async {
+    try {
+      final userCredential = await FirebaseAuth.instance.signInAnonymously();
+      onSignIn(userCredential.user);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +80,7 @@ class SignInPage extends StatelessWidget {
             text: 'Anonimna prijava',
             textColor: Colors.black87,
             backgroundColor: Colors.lime.shade400,
-            onPressed: () {},
+            onPressed: _signInAnonimosly,
           ),
         ],
       ),

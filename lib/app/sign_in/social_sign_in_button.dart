@@ -3,11 +3,11 @@ import 'package:time_tracker/app/common_widgets/custom_elevated_button.dart';
 
 class SocialSignInButton extends CustomElevatedButton {
   SocialSignInButton({
-    @required String? text,
-    Color? backgroundColor,
-    Color? textColor,
-    VoidCallback? onPressed,
-    @required String? socialImage,
+    @required String text,
+    Color backgroundColor,
+    Color textColor,
+    VoidCallback onPressed,
+    @required String socialImage,
   })  : assert(socialImage != null),
         assert(text != null),
         super(
@@ -16,7 +16,7 @@ class SocialSignInButton extends CustomElevatedButton {
             children: [
               Image.asset('images/$socialImage\-logo.png'),
               Text(
-                text!,
+                text,
                 style: TextStyle(
                   color: textColor,
                   fontSize: 15.0,
@@ -25,7 +25,7 @@ class SocialSignInButton extends CustomElevatedButton {
               SizedBox(),
             ],
           ),
-          backgroundColor: backgroundColor!,
+          backgroundColor: backgroundColor,
           onPressed: onPressed,
         );
 }
