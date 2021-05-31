@@ -15,6 +15,14 @@ class SignInPage extends StatelessWidget {
     }
   }
 
+  Future<void> _signInWithGoogle() async {
+    try {
+      await auth.signInWithGoogle();
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +66,7 @@ class SignInPage extends StatelessWidget {
           SocialSignInButton(
             backgroundColor: Colors.white,
             socialImage: 'google',
-            onPressed: () {},
+            onPressed: _signInWithGoogle,
             text: 'Prijava putem Google-a',
             textColor: Colors.black87,
           ),
@@ -86,3 +94,7 @@ class SignInPage extends StatelessWidget {
     );
   }
 }
+
+// keytool -exportcert -alias androiddebugkey -keystore "C:\Users\Asko\.android\debug.keystore"
+
+// keytool -exportcert -alias androiddebugkey -keystore "C:\Users\Asko\.android\debug.keystore" | "C:\Users\Asko\openssl-0.9.8k_X64\bin\openssl" sha1 -binary | "C:\Users\Asko\openssl-0.9.8k_X64\bin\openssl" base64
