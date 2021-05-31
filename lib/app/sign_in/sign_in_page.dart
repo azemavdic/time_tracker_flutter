@@ -23,6 +23,14 @@ class SignInPage extends StatelessWidget {
     }
   }
 
+  Future<void> _signInWithFacebook() async {
+    try {
+      await auth.signInWithFacebook();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +64,7 @@ class SignInPage extends StatelessWidget {
           SocialSignInButton(
             backgroundColor: Color(0xFF334D92),
             socialImage: 'facebook',
-            onPressed: () {},
+            onPressed: _signInWithFacebook,
             text: 'Prijava putem Facebook-a',
             textColor: Colors.white,
           ),
