@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_tracker/common_widgets/form_submit_button.dart';
 
 class EmailSignInForm extends StatefulWidget {
   @override
@@ -40,9 +41,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         ),
       ),
       SizedBox(height: 8.0),
-      ElevatedButton(
+      FormSubmitButton(
         onPressed: () {},
-        child: Text('Prijava'),
+        text: 'Prijava',
       ),
       SizedBox(height: 8.0),
       TextButton(
