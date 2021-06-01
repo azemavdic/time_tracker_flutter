@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_tracker/app/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
 import 'package:time_tracker/services/auth.dart';
@@ -31,6 +32,15 @@ class SignInPage extends StatelessWidget {
     }
   }
 
+  void _signInWithEmail(context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (context) => EmailSignInPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,12 +48,12 @@ class SignInPage extends StatelessWidget {
         title: Text('Time Tracker'),
         elevation: 5.0,
       ),
-      body: _buildContent(),
+      body: _buildContent(context),
       backgroundColor: Colors.grey.shade200,
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(context) {
     return Padding(
       padding: EdgeInsets.all(10),
       child: Column(
@@ -83,7 +93,7 @@ class SignInPage extends StatelessWidget {
             text: 'Prijava putem Emaila',
             textColor: Colors.white,
             backgroundColor: Colors.teal.shade700,
-            onPressed: () {},
+            onPressed: () => _signInWithEmail(context),
           ),
           SizedBox(height: 8.0),
           Text(

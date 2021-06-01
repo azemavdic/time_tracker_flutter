@@ -8,6 +8,7 @@ abstract class AuthBase {
   Future<User> signInAnonymously();
   Future<User> signInWithGoogle();
   Future<User> signInWithFacebook();
+  // Future<User> signInWithEmail();
   Future<void> signOut();
 }
 
@@ -47,6 +48,7 @@ class Auth implements AuthBase {
     }
   }
 
+  @override
   Future<User> signInWithFacebook() async {
     final fb = FacebookLogin();
     final response = await fb.logIn(permissions: [
@@ -69,6 +71,19 @@ class Auth implements AuthBase {
         throw UnimplementedError();
     }
   }
+
+  // @override
+  // Future<User> signInWithEmail(String email, String password) async {
+  //   try {
+  //     final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     return userCredential.user;
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Future<void> signOut() async {
