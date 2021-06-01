@@ -19,6 +19,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     return [
       TextField(
         decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
           labelText: 'Email',
           hintText: 'test@mail.com',
         ),
@@ -27,6 +28,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       TextField(
         obscureText: !_passwordVisible,
         decoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
           labelText: 'Šifra',
           suffixIcon: IconButton(
               color: Colors.grey,
