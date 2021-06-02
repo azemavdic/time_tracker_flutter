@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_tracker/app/sign_in/validators.dart';
 import 'package:time_tracker/common_widgets/form_submit_button.dart';
 import 'package:time_tracker/services/auth.dart';
 
@@ -7,7 +8,7 @@ enum EmailSignInFormType {
   register,
 }
 
-class EmailSignInForm extends StatefulWidget {
+class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
   EmailSignInForm({@required this.auth});
   final AuthBase auth;
   @override
@@ -68,7 +69,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         ? 'Niste registrovani? Registrujte se ovdje'
         : 'Imate račun? Prijavite se ovdje.';
 
-    bool submitEnabled = _email.isNotEmpty && _password.isNotEmpty;
+    bool submitEnabled = widget.emailValidator.isValid(_email) &&
+        widget.emailValidator.isValid(_password);
 
     return [
       _buildEmailTextField(),
