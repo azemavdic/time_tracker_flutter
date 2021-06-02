@@ -46,10 +46,12 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String get _email => _emailController.text;
   String get _password => _passwordController.text;
   bool _submittedForm = false;
+  bool _isLoading = false;
 
   void _submit() async {
     setState(() {
       _submittedForm = true;
+      _isLoading = true;
     });
     try {
       if (_formType == EmailSignInFormType.signIn) {
@@ -60,6 +62,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       Navigator.of(context).pop();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -75,7 +81,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         : 'Imate račun? Prijavite se ovdje.';
 
     bool submitEnabled = widget.emailValidator.isValid(_email) &&
-        widget.emailValidator.isValid(_password);
+        widget.emailValidator.isValid(_password) &&
+        !_isLoading;
 
     return [
       _buildEmailTextField(),
@@ -89,7 +96,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       SizedBox(height: 8.0),
       TextButton(
         onPressed: () {
-          _toggleFormType();
+          !_isLoading ?? _toggleFormType();
           _emailFocusNode.requestFocus();
         },
         child: Text(secondaryText),
@@ -109,6 +116,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       controller: _passwordController,
       obscureText: !_passwordVisible,
       decoration: InputDecoration(
+        enabled: _isLoading == false,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         errorText: showErrorText ? widget.invalidPasswordText : null,
         labelText: 'Šifra',
@@ -143,6 +151,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       focusNode: _emailFocusNode,
       controller: _emailController,
       decoration: InputDecoration(
+        enabled: _isLoading == false,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         labelText: 'Email',
         hintText: 'test@mail.com',
