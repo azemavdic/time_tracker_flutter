@@ -33,6 +33,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   void _toggleFormType() {
     setState(() {
+      _submittedForm = false;
       _formType = _formType == EmailSignInFormType.signIn
           ? EmailSignInFormType.register
           : EmailSignInFormType.signIn;
@@ -44,8 +45,12 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   String get _email => _emailController.text;
   String get _password => _passwordController.text;
+  bool _submittedForm = false;
 
   void _submit() async {
+    setState(() {
+      _submittedForm = true;
+    });
     try {
       if (_formType == EmailSignInFormType.signIn) {
         await widget.auth.signInWithEmail(_email, _password);
@@ -94,6 +99,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   //Widget za unos šifre
   TextField _buildPasswordTextField() {
+    bool showErrorText =
+        _submittedForm && !widget.passwordValidator.isValid(_password);
     return TextField(
       onChanged: (password) => _updateState(),
       onEditingComplete: _submit,
@@ -103,6 +110,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       obscureText: !_passwordVisible,
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+        errorText: showErrorText ? widget.invalidPasswordText : null,
         labelText: 'Šifra',
         suffixIcon: IconButton(
             color: Colors.grey,
@@ -124,6 +132,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   //Widget za unos emaila
   TextField _buildEmailTextField() {
+    bool showErrorText =
+        _submittedForm && !widget.emailValidator.isValid(_email);
     return TextField(
       onChanged: (password) => _updateState(),
       onEditingComplete: _emailEditingComplete,
@@ -136,6 +146,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         labelText: 'Email',
         hintText: 'test@mail.com',
+        errorText: showErrorText ? widget.invalidEmailText : null,
       ),
     );
   }
