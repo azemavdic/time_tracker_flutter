@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker/common_widgets/form_submit_button.dart';
+import 'package:time_tracker/services/auth.dart';
 
 enum EmailSignInFormType {
   signIn,
@@ -7,33 +8,24 @@ enum EmailSignInFormType {
 }
 
 class EmailSignInForm extends StatefulWidget {
+  EmailSignInForm({@required this.auth});
+  final AuthBase auth;
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
 
 class _EmailSignInFormState extends State<EmailSignInForm> {
   bool _passwordVisible;
-  FocusNode myFocusNode;
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  void _submit() {
-    print(_emailController.text);
-    print(_passwordController.text);
-  }
 
   @override
   void initState() {
     super.initState();
     _passwordVisible = false;
-    myFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    myFocusNode.dispose();
   }
 
   EmailSignInFormType _formType = EmailSignInFormType.signIn;
@@ -49,55 +41,101 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     });
   }
 
+  String get _email => _emailController.text;
+  String get _password => _passwordController.text;
+
+  void _submit() async {
+    try {
+      if (_formType == EmailSignInFormType.signIn) {
+        await widget.auth.signInWithEmail(_email, _password);
+      } else {
+        await widget.auth.registerWithEmail(_email, _password);
+      }
+      Navigator.of(context).pop();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void _emailEditingComplete() {
+    _passwordFocusNode.requestFocus();
+  }
+
   List<Widget> _buildChildren() {
     final primaryText =
         _formType == EmailSignInFormType.signIn ? 'Prijava' : 'Registracija';
     final secondaryText = _formType == EmailSignInFormType.signIn
         ? 'Niste registrovani? Registrujte se ovdje'
         : 'Imate račun? Prijavite se ovdje.';
+
+    bool submitEnabled = _email.isNotEmpty && _password.isNotEmpty;
+
     return [
-      TextField(
-        focusNode: myFocusNode,
-        controller: _emailController,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-          labelText: 'Email',
-          hintText: 'test@mail.com',
-        ),
-      ),
+      _buildEmailTextField(),
       SizedBox(height: 8.0),
-      TextField(
-        controller: _passwordController,
-        obscureText: !_passwordVisible,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-          labelText: 'Šifra',
-          suffixIcon: IconButton(
-              color: Colors.grey,
-              icon: !_passwordVisible
-                  ? Icon(Icons.visibility)
-                  : Icon(Icons.visibility_off),
-              onPressed: () {
-                setState(() {
-                  _passwordVisible = !_passwordVisible;
-                });
-              }),
-        ),
-      ),
+      _buildPasswordTextField(),
       SizedBox(height: 8.0),
       FormSubmitButton(
-        onPressed: _submit,
+        onPressed: submitEnabled ? _submit : null,
         text: primaryText,
       ),
       SizedBox(height: 8.0),
       TextButton(
         onPressed: () {
           _toggleFormType();
-          myFocusNode.requestFocus();
+          _emailFocusNode.requestFocus();
         },
         child: Text(secondaryText),
       )
     ];
+  }
+
+  //Widget za unos šifre
+  TextField _buildPasswordTextField() {
+    return TextField(
+      onChanged: (password) => _updateState(),
+      onEditingComplete: _submit,
+      textInputAction: TextInputAction.done,
+      focusNode: _passwordFocusNode,
+      controller: _passwordController,
+      obscureText: !_passwordVisible,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+        labelText: 'Šifra',
+        suffixIcon: IconButton(
+            color: Colors.grey,
+            icon: !_passwordVisible
+                ? Icon(Icons.visibility)
+                : Icon(Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _passwordVisible = !_passwordVisible;
+              });
+            }),
+      ),
+    );
+  }
+
+  void _updateState() {
+    setState(() {});
+  }
+
+  //Widget za unos emaila
+  TextField _buildEmailTextField() {
+    return TextField(
+      onChanged: (password) => _updateState(),
+      onEditingComplete: _emailEditingComplete,
+      keyboardType: TextInputType.emailAddress,
+      autocorrect: false,
+      textInputAction: TextInputAction.next,
+      focusNode: _emailFocusNode,
+      controller: _emailController,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+        labelText: 'Email',
+        hintText: 'test@mail.com',
+      ),
+    );
   }
 
   @override
