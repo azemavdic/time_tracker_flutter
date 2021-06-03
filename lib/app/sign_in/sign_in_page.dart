@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:time_tracker/app/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
-import 'package:time_tracker/services/auth.dart';
+import 'package:time_tracker/services/auth_provider.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({Key key, @required this.auth}) : super(key: key);
-  final AuthBase auth;
-
-  Future<void> _signInAnonimosly() async {
+  Future<void> _signInAnonimosly(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.signInAnonymously();
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> _signInWithGoogle() async {
+  Future<void> _signInWithGoogle(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.signInWithGoogle();
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> _signInWithFacebook() async {
+  Future<void> _signInWithFacebook(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.signInWithFacebook();
     } catch (e) {
       print(e.toString());
@@ -36,9 +36,7 @@ class SignInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (context) => EmailSignInPage(
-          auth: auth,
-        ),
+        builder: (context) => EmailSignInPage(),
       ),
     );
   }
@@ -76,7 +74,7 @@ class SignInPage extends StatelessWidget {
           SocialSignInButton(
             backgroundColor: Color(0xFF334D92),
             socialImage: 'facebook',
-            onPressed: _signInWithFacebook,
+            onPressed: () => _signInWithFacebook(context),
             text: 'Prijava putem Facebook-a',
             textColor: Colors.white,
           ),
@@ -86,7 +84,7 @@ class SignInPage extends StatelessWidget {
           SocialSignInButton(
             backgroundColor: Colors.white,
             socialImage: 'google',
-            onPressed: _signInWithGoogle,
+            onPressed: () => _signInWithGoogle(context),
             text: 'Prijava putem Google-a',
             textColor: Colors.black87,
           ),
@@ -107,7 +105,7 @@ class SignInPage extends StatelessWidget {
             text: 'Anonimna prijava',
             textColor: Colors.black87,
             backgroundColor: Colors.lime.shade400,
-            onPressed: _signInAnonimosly,
+            onPressed: () => _signInAnonimosly(context),
           ),
         ],
       ),

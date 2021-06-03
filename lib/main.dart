@@ -23,9 +23,7 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => LandingPage(
-                auth: Auth(),
-              ),
+          '/': (context) => LandingPage(),
         },
       ),
     );

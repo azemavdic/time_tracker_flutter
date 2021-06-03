@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:time_tracker/app/sign_in/validators.dart';
 import 'package:time_tracker/common_widgets/form_submit_button.dart';
 import 'package:time_tracker/common_widgets/show_alert_dialog.dart';
-import 'package:time_tracker/services/auth.dart';
+import 'package:time_tracker/services/auth_provider.dart';
 
 enum EmailSignInFormType {
   signIn,
@@ -10,8 +10,6 @@ enum EmailSignInFormType {
 }
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
-  EmailSignInForm({@required this.auth});
-  final AuthBase auth;
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
@@ -55,10 +53,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       _isLoading = true;
     });
     try {
+      final auth = AuthProvider.of(context);
       if (_formType == EmailSignInFormType.signIn) {
-        await widget.auth.signInWithEmail(_email, _password);
+        await auth.signInWithEmail(_email, _password);
       } else {
-        await widget.auth.registerWithEmail(_email, _password);
+        await auth.registerWithEmail(_email, _password);
       }
       Navigator.of(context).pop();
     } catch (e) {
@@ -103,10 +102,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       ),
       SizedBox(height: 8.0),
       TextButton(
-        onPressed: () {
-          !_isLoading ?? _toggleFormType();
-          _emailFocusNode.requestFocus();
-        },
+        onPressed: !_isLoading ? _toggleFormType : null,
         child: Text(secondaryText),
       )
     ];
