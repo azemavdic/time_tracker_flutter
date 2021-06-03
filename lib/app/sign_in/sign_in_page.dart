@@ -3,33 +3,57 @@ import 'package:provider/provider.dart';
 import 'package:time_tracker/app/sign_in/email_sign_in_page.dart';
 import 'package:time_tracker/app/sign_in/sign_in_button.dart';
 import 'package:time_tracker/app/sign_in/social_sign_in_button.dart';
+import 'package:time_tracker/common_widgets/show_exception_alert_dialog.dart';
 import 'package:time_tracker/services/auth.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  bool _isLoading = false;
+  void _showSignInError(BuildContext context, Exception exception) {
+    showExceptionAlertDialog(
+      context,
+      title: 'Neuspjela prijava',
+      exception: exception,
+    );
+  }
+
   Future<void> _signInAnonimosly(BuildContext context) async {
     try {
+      setState(() => _isLoading = true);
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.signInAnonymously();
-    } catch (e) {
-      print(e);
+    } on Exception catch (e) {
+      _showSignInError(context, e);
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
   Future<void> _signInWithGoogle(BuildContext context) async {
     try {
+      setState(() => _isLoading = true);
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.signInWithGoogle();
-    } catch (e) {
-      print(e);
+    } on Exception catch (e) {
+      _showSignInError(context, e);
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
   Future<void> _signInWithFacebook(BuildContext context) async {
     try {
+      setState(() => _isLoading = true);
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.signInWithFacebook();
-    } catch (e) {
-      print(e.toString());
+    } on Exception catch (e) {
+      _showSignInError(context, e);
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -61,21 +85,14 @@ class SignInPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'Prijavi se',
-            style: TextStyle(
-              fontSize: 30.0,
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.center,
-          ),
+          _buildHeader(),
           SizedBox(
             height: 48.0,
           ),
           SocialSignInButton(
             backgroundColor: Color(0xFF334D92),
             socialImage: 'facebook',
-            onPressed: () => _signInWithFacebook(context),
+            onPressed: _isLoading ? null : () => _signInWithFacebook(context),
             text: 'Prijava putem Facebook-a',
             textColor: Colors.white,
           ),
@@ -85,7 +102,7 @@ class SignInPage extends StatelessWidget {
           SocialSignInButton(
             backgroundColor: Colors.white,
             socialImage: 'google',
-            onPressed: () => _signInWithGoogle(context),
+            onPressed: _isLoading ? null : () => _signInWithGoogle(context),
             text: 'Prijava putem Google-a',
             textColor: Colors.black87,
           ),
@@ -94,7 +111,7 @@ class SignInPage extends StatelessWidget {
             text: 'Prijava putem Emaila',
             textColor: Colors.white,
             backgroundColor: Colors.teal.shade700,
-            onPressed: () => _signInWithEmail(context),
+            onPressed: _isLoading ? null : () => _signInWithEmail(context),
           ),
           SizedBox(height: 8.0),
           Text(
@@ -106,14 +123,24 @@ class SignInPage extends StatelessWidget {
             text: 'Anonimna prijava',
             textColor: Colors.black87,
             backgroundColor: Colors.lime.shade400,
-            onPressed: () => _signInAnonimosly(context),
+            onPressed: _isLoading ? null : () => _signInAnonimosly(context),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildHeader() {
+    if (_isLoading == true) {
+      return LinearProgressIndicator();
+    }
+    return Text(
+      'Prijavi se',
+      style: TextStyle(
+        fontSize: 30.0,
+        fontWeight: FontWeight.w600,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
 }
-
-// keytool -exportcert -alias androiddebugkey -keystore "C:\Users\Asko\.android\debug.keystore"
-
-// keytool -exportcert -alias androiddebugkey -keystore "C:\Users\Asko\.android\debug.keystore" | "C:\Users\Asko\openssl-0.9.8k_X64\bin\openssl" sha1 -binary | "C:\Users\Asko\openssl-0.9.8k_X64\bin\openssl" base64
