@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:time_tracker/app/sign_in/validators.dart';
 import 'package:time_tracker/common_widgets/form_submit_button.dart';
+import 'package:time_tracker/common_widgets/show_alert_dialog.dart';
 import 'package:time_tracker/services/auth.dart';
 
 enum EmailSignInFormType {
@@ -64,25 +63,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       Navigator.of(context).pop();
     } catch (e) {
       print(e.toString());
-      if (Platform.isIOS) {
-      } else {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Neuspješna prijava'),
-                content: Text(e.toString()),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('OK'),
-                  )
-                ],
-              );
-            });
-      }
+      showAlertDialog(context,
+          title: 'Neuspješna prijava',
+          content: e.toString(),
+          defaultActionText: 'OK');
     } finally {
       setState(() {
         _isLoading = false;
