@@ -108,18 +108,34 @@ class _SignInPageState extends State<SignInPage> {
           ),
           SizedBox(height: 8.0),
           SignInButton(
-            text: 'Prijava putem Emaila',
+            icon: Icons.mail,
+            text: 'Prijava putem Email-a',
             textColor: Colors.white,
             backgroundColor: Colors.teal.shade700,
             onPressed: _isLoading ? null : () => _signInWithEmail(context),
           ),
-          SizedBox(height: 8.0),
-          Text(
-            'ili',
-            textAlign: TextAlign.center,
+          SizedBox(height: 16.0),
+          Row(
+            children: [
+              Expanded(
+                child: Divider(
+                  thickness: 1.0,
+                ),
+              ),
+              Text(
+                'ili',
+                textAlign: TextAlign.center,
+              ),
+              Expanded(
+                child: Divider(
+                  thickness: 1.0,
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 16.0),
           SignInButton(
+            icon: Icons.account_circle,
             text: 'Anonimna prijava',
             textColor: Colors.black87,
             backgroundColor: Colors.lime.shade400,
