@@ -6,10 +6,7 @@ import 'package:time_tracker/common_widgets/form_submit_button.dart';
 import 'package:time_tracker/common_widgets/show_exception_alert_dialog.dart';
 import 'package:time_tracker/services/auth.dart';
 
-enum EmailSignInFormType {
-  signIn,
-  register,
-}
+import 'email_sign_in_model.dart';
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidators {
   @override
