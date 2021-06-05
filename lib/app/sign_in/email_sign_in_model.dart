@@ -9,11 +9,27 @@ class EmailSignInModel {
     this.password = '',
     this.formType = EmailSignInFormType.signIn,
     this.isLoading = false,
-    this.sbmitted = false,
+    this.submitted = false,
   });
   final String email;
   final String password;
   final EmailSignInFormType formType;
   final bool isLoading;
-  final bool sbmitted;
+  final bool submitted;
+
+  EmailSignInModel copyWith({
+    String email,
+    String password,
+    EmailSignInFormType formType,
+    bool isLoading,
+    bool submitted,
+  }) {
+    return EmailSignInModel(
+      email: email ?? this.email,
+      password: password ?? this.password,
+      formType: formType ?? this.formType,
+      isLoading: isLoading ?? this.isLoading,
+      submitted: submitted ?? this.submitted,
+    );
+  }
 }

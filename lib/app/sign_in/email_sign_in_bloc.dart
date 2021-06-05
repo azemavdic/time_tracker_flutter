@@ -14,4 +14,24 @@ class EmailSignInBloc {
   void dispose() {
     _modelController.close();
   }
+
+  EmailSignInModel _model = EmailSignInModel();
+
+  //Add value to stream
+  void updateWith({
+    String email,
+    String password,
+    EmailSignInFormType formType,
+    bool isLoading,
+    bool submitted,
+  }) {
+    _model = _model.copyWith(
+      email: email,
+      formType: formType,
+      isLoading: isLoading,
+      password: password,
+      submitted: submitted,
+    );
+    _modelController.add(_model);
+  }
 }
