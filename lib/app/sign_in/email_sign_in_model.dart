@@ -1,9 +1,8 @@
-enum EmailSignInFormType {
-  signIn,
-  register,
-}
+import 'validators.dart';
 
-class EmailSignInModel {
+enum EmailSignInFormType { signIn, register }
+
+class EmailSignInModel with EmailAndPasswordValidators {
   EmailSignInModel({
     this.email = '',
     this.password = '',
@@ -16,6 +15,32 @@ class EmailSignInModel {
   final EmailSignInFormType formType;
   final bool isLoading;
   final bool submitted;
+
+  String get primaryButtonText {
+    return formType == EmailSignInFormType.signIn ? 'Prijava' : 'Registracija';
+  }
+
+  String get secondaryButtonText {
+    return formType == EmailSignInFormType.signIn
+        ? 'Niste registrovani? Registrujte se ovdje'
+        : 'Imate račun? Prijavite se ovdje.';
+  }
+
+  bool get canSubmit {
+    return emailValidator.isValid(email) &&
+        passwordValidator.isValid(password) &&
+        !isLoading;
+  }
+
+  String get passwordErrorText {
+    bool showErrorText = submitted && !passwordValidator.isValid(password);
+    return showErrorText ? invalidPasswordErrorText : null;
+  }
+
+  String get emailErrorText {
+    bool showErrorText = submitted && !emailValidator.isValid(email);
+    return showErrorText ? invalidEmailErrorText : null;
+  }
 
   EmailSignInModel copyWith({
     String email,

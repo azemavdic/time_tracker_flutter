@@ -39,6 +39,22 @@ class EmailSignInBloc {
     _modelController.add(_model);
   }
 
+  void updateEmail(String email) => updateWith(email: email);
+  void updatePassword(String password) => updateWith(password: password);
+
+  void toggleFormType() {
+    final formType = _model.formType == EmailSignInFormType.signIn
+        ? EmailSignInFormType.register
+        : EmailSignInFormType.signIn;
+    updateWith(
+      email: '',
+      password: '',
+      isLoading: false,
+      submitted: false,
+      formType: formType,
+    );
+  }
+
   Future<void> submit() async {
     updateWith(submitted: true, isLoading: true);
 

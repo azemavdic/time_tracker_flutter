@@ -2,15 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker/app/sign_in/email_sign_in_bloc.dart';
-import 'package:time_tracker/app/sign_in/validators.dart';
 import 'package:time_tracker/common_widgets/form_submit_button.dart';
 import 'package:time_tracker/common_widgets/show_exception_alert_dialog.dart';
 import 'package:time_tracker/services/auth.dart';
 
 import 'email_sign_in_model.dart';
 
-class EmailSignInFormBlocBased extends StatefulWidget
-    with EmailAndPasswordValidators {
+class EmailSignInFormBlocBased extends StatefulWidget {
   EmailSignInFormBlocBased({@required this.bloc});
   final EmailSignInBloc bloc;
   static Widget create(BuildContext context) {
@@ -44,16 +42,8 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
     _passwordVisible = false;
   }
 
-  void _toggleFormType(EmailSignInModel model) {
-    widget.bloc.updateWith(
-      email: '',
-      password: '',
-      isLoading: false,
-      submitted: false,
-      formType: model.formType == EmailSignInFormType.signIn
-          ? EmailSignInFormType.register
-          : EmailSignInFormType.signIn,
-    );
+  void _toggleFormType() {
+    widget.bloc.toggleFormType();
 
     _emailController.text = '';
     _passwordController.text = '';
@@ -83,45 +73,32 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
   }
 
   void _emailEditingComplete(EmailSignInModel model) {
-    final newFocus = widget.emailValidator.isValid(model.email)
+    final newFocus = model.emailValidator.isValid(model.email)
         ? _emailFocusNode
         : _passwordFocusNode;
     newFocus.requestFocus();
   }
 
   List<Widget> _buildChildren(EmailSignInModel model) {
-    final primaryText = model.formType == EmailSignInFormType.signIn
-        ? 'Prijava'
-        : 'Registracija';
-    final secondaryText = model.formType == EmailSignInFormType.signIn
-        ? 'Niste registrovani? Registrujte se ovdje'
-        : 'Imate račun? Prijavite se ovdje.';
-
-    bool submitEnabled = widget.emailValidator.isValid(model.email) &&
-        widget.emailValidator.isValid(model.password) &&
-        !model.isLoading;
-
     return [
       _buildEmailTextField(model),
       SizedBox(height: 8.0),
       _buildPasswordTextField(model),
       SizedBox(height: 8.0),
       FormSubmitButton(
-        onPressed: submitEnabled ? _submit : null,
-        text: primaryText,
+        onPressed: model.canSubmit ? _submit : null,
+        text: model.primaryButtonText,
       ),
       SizedBox(height: 8.0),
       TextButton(
-        onPressed: !model.isLoading ? () => _toggleFormType(model) : null,
-        child: Text(secondaryText),
+        onPressed: !model.isLoading ? () => _toggleFormType() : null,
+        child: Text(model.secondaryButtonText),
       )
     ];
   }
 
   //Widget za unos šifre
   TextField _buildPasswordTextField(EmailSignInModel model) {
-    bool showErrorText =
-        model.submitted && !widget.passwordValidator.isValid(model.password);
     return TextField(
       onChanged: (password) => widget.bloc.updateWith(password: password),
       onEditingComplete: _submit,
@@ -132,7 +109,7 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
       decoration: InputDecoration(
         enabled: model.isLoading == false,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
-        errorText: showErrorText ? widget.invalidPasswordText : null,
+        errorText: model.passwordErrorText,
         labelText: 'Šifra',
         suffixIcon: IconButton(
             color: Colors.grey,
@@ -150,8 +127,6 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
 
   //Widget za unos emaila
   TextField _buildEmailTextField(EmailSignInModel model) {
-    bool showErrorText =
-        model.submitted && !widget.emailValidator.isValid(model.email);
     return TextField(
       onChanged: (email) => widget.bloc.updateWith(email: email),
       onEditingComplete: () => _emailEditingComplete(model),
@@ -165,7 +140,7 @@ class _EmailSignInFormBlocBasedState extends State<EmailSignInFormBlocBased> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
         labelText: 'Email',
         hintText: 'test@mail.com',
-        errorText: showErrorText ? widget.invalidEmailText : null,
+        errorText: model.emailErrorText,
       ),
     );
   }
